@@ -51,8 +51,6 @@ function showSpongeBob(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-
-
 const showInputBox = async () => {
 	const editor = vscode.window.activeTextEditor;
 	// const rp = require("request-promise");
@@ -85,6 +83,29 @@ const showInputBox = async () => {
 // 	// });
 };
 
+const choices = ['a', 'b']
+
+async function getUserSelectdValue() {
+    return new Promise((resolve) => {
+        const quickPick = vscode.window.createQuickPick();
+        quickPick.items = choices.map(choice => ({ label: choice }));
+
+        quickPick.title = 'Choose your favorite value:'
+
+        quickPick.onDidChangeValue(() => {
+            // INJECT user values into proposed values
+            if (!choices.includes(quickPick.value)) quickPick.items = [quickPick.value, ...choices].map(label => ({ label }))
+        })
+
+        quickPick.onDidAccept(() => {
+            const selection = quickPick.activeItems[0]
+            resolve(selection.label)
+            quickPick.hide()
+        })
+        quickPick.show();
+    })
+}
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -92,15 +113,17 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('We are live people!');
 	showSpongeBob(context);
+	vscode.window.showInformationMessage('Hello Ledgy Hackaton!');
+
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('helloworld.helloWorld', () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello Ledgy Hackaton!');
 		console.log('testing here too');
 		showInputBox();
+		getUserSelectdValue();
 	});
 
 	context.subscriptions.push(disposable);
