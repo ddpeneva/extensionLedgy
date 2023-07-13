@@ -16,17 +16,17 @@
   "contributes": {
     "commands": [
       {
-        "command": "helloworld.helloWorld",
-        "title": "Hello World"
+        "command": "helloworld.createBookmark",
+        "title": "Add Documentation"
       }
     ],
-  "menus": {
-    "editor/context": [
-      {
-        "command": "helloworld.helloWorld"
-      }
-    ]
-  }
+    "menus": {
+      "editor/context": [
+        {
+          "command": "helloworld.createBookmark"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -50,5 +50,3 @@
     "@vscode/test-electron": "^2.3.2"
   }
 }
-
-
