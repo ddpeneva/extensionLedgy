@@ -34,7 +34,7 @@ export const createDecorator = (
   const disposable = vscode.window.onDidChangeTextEditorSelection((event) => {
     if (event.textEditor === activeEditor) {
       const selection = event.selections[0];
-      if (selection && selection.active.line === lineNumber) {
+      if (selection && selection.active.line === (lineNumber - 1)) {
         // Open the URL when the decoration is clicked
         vscode.env.openExternal(vscode.Uri.parse(link));
       }

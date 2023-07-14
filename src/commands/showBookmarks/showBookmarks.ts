@@ -8,14 +8,20 @@ const getFileBookmarks = async (path: string): Promise<Bookmark[]> => {
   return data.links;
 }; 
 
-export const showBookmarks = async (context: vscode.ExtensionContext) => {
+const showFileBookmarks = async (context: vscode.ExtensionContext) => {
   const editor = vscode.window.activeTextEditor;
   const filePath = editor && getFilePath(editor);
-  console.log(filePath);
-
   const bookmarks = await getFileBookmarks(filePath ?? '');
 
   bookmarks.forEach(({ line, link }) => {
     showBookmark(context, line, link);
+  });
+};
+
+export const showBookmarks = async (context: vscode.ExtensionContext) => {
+  showFileBookmarks(context);
+
+  vscode.workspace.onDidOpenTextDocument((document: vscode.TextDocument) => {
+    showFileBookmarks(context);
   });
 };
