@@ -13,10 +13,11 @@ export const createDecorator = (
   });
 
   // Create a decoration range at the specified line number
+  // Using lineNumber - 1 because vscode counts lines starting on 0
   const decorationRange = new vscode.Range(
-    lineNumber,
+    lineNumber - 1, 
     0, // start column
-    lineNumber,
+    lineNumber - 1,
     0 // end column
   );
 
