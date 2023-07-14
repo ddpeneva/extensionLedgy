@@ -1,21 +1,5 @@
 import * as vscode from 'vscode';
-import axios from 'axios';
-import { getFilePath } from '../lib/getFilePath';
-
-function getFileInfo(editor: vscode.TextEditor) {
-  const position = editor.selection.active;
-  const lineNumber = position.line + 1;
-  return {
-    file: getFilePath(editor),
-    line: lineNumber,
-  };
-}
-
-async function submitBookmark(bookmark: Bookmark) {
-  const response = await axios.post('https://polite-gaufre-824dca.netlify.app/.netlify/functions/links', bookmark);
-  console.log(response);
-  return response;
-}
+import { submitBookmark } from './lib/submitBookmark';
 
 export const showInputBox = async () => {
   const editor = vscode.window.activeTextEditor;
@@ -38,3 +22,7 @@ export const showInputBox = async () => {
   await submitBookmark(newBookmarkData);
   vscode.window.showInformationMessage('Code linked with docs!');
 };
+function getFileInfo(editor: vscode.TextEditor): Bookmark {
+  throw new Error('Function not implemented.');
+}
+
