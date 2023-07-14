@@ -4,7 +4,7 @@ import { getFileInfo } from "./lib/getFileInfo";
 import { submitBookmark } from "./lib/submitBookmark";
 import { showBookmark } from "../lib/showBookmark";
 
-const DEFAULT_SEARCH = 's';
+const DEFAULT_SEARCH = 'ifrs';
 
 const saveBookmark = async (editor: vscode.TextEditor, link = '') => {
   // Prepare new bookmark data
