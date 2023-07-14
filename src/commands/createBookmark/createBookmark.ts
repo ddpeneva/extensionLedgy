@@ -1,33 +1,40 @@
-import * as vscode from "vscode";
+import * as vscode from 'vscode';
+import axios from 'axios';
+import { getFilePath } from '../lib/getFilePath';
+
+function getFileInfo(editor: vscode.TextEditor) {
+  const position = editor.selection.active;
+  const lineNumber = position.line + 1;
+  return {
+    file: getFilePath(editor),
+    line: lineNumber,
+  };
+}
+
+async function submitBookmark(bookmark: Bookmark) {
+  const response = await axios.post('https://polite-gaufre-824dca.netlify.app/.netlify/functions/links', bookmark);
+  console.log(response);
+  return response;
+}
 
 export const showInputBox = async () => {
   const editor = vscode.window.activeTextEditor;
-  // const rp = require("request-promise");
-  const text = editor && editor.document.getText(editor.selection);
+  if (!editor) {
+    return vscode.window.showErrorMessage('No active text editor found!');
+  }
+  const textInput = await vscode.window.showInputBox({
+		placeHolder: "Which Notion page are you looking for?",
+	});
+  console.log(textInput);
 
-  const notionPageTitle = await vscode.window.showInputBox({
-    placeHolder: "Which Notion page are you looking for?",
-  });
+  // Prepare new bookmark data
+  const newBookmarkData: Bookmark = {
+    ...getFileInfo(editor),
+    link: textInput ?? '',
+  };
+  console.log(newBookmarkData);
 
-  // filename, line number, link
-  // 	// const options = {
-  // method: "POST",
-  // 	// 	uri: "https://polite-gaufre-824dca.netlify.app/.netlify/functions/links",
-  // 	// 	headers: {
-  // 	// 		"User-Agent": "Request-Promise"
-  // 	// 	},
-  // 	// 	// here we want to send the file name and line
-  // 	// 	// body: {
-  // 	// 	//   description: "the description for this notion page",
-  // 	// 	//   public: true,
-  // 	// 	//   files: {}
-  // 	// 	// },
-  // 	// 	json: true
-  // 	// };
-  // 	// options.body.files[notionPageTitle] = { content: text };
-
-  // 	// rp(options).then(r => {
-  // 	// 	const parsedUrl = vscode.Uri.parse(r.html_url);
-  // 	// 	vscode.commands.executeCommand("vscode.open", parsedUrl);
-  // 	// });
+  // Send new bookmark to API
+  await submitBookmark(newBookmarkData);
+  vscode.window.showInformationMessage('Code linked with docs!');
 };

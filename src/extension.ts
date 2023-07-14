@@ -14,15 +14,12 @@ export function activate(context: vscode.ExtensionContext) {
     () => {
       // The code you place here will be executed every time your command is executed
       // Display a message box to the user
-      console.log("testing here too");
       showInputBox();
-      getUserSelectdValue();
+      // getUserSelectdValue();
     }
   );
 
   context.subscriptions.push(disposable);
 }
-// exports.activate = activate;
-// This method is called when your extension is deactivated
+
 export function deactivate() {}
-// exports.deactivate = deactivate;
