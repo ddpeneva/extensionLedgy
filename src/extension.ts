@@ -12,10 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand(
     "helloworld.createBookmark",
     () => {
-      // The code you place here will be executed every time your command is executed
-      // Display a message box to the user
-      // showInputBox();
-      getUserSelectdValue();
+      getUserSelectdValue(context);
     }
   );
 

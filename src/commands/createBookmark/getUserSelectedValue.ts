@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { PageQuickPick, setNotionSuggestions } from "./lib/setNotionSuggestions";
 import { getFileInfo } from "./lib/getFileInfo";
 import { submitBookmark } from "./lib/submitBookmark";
+import { showBookmark } from "../lib/showBookmark";
 
 const DEFAULT_SEARCH = 's';
 
@@ -15,9 +16,10 @@ const saveBookmark = async (editor: vscode.TextEditor, link = '') => {
 
   // Send new bookmark to API
   await submitBookmark(newBookmarkData);
+  return newBookmarkData;
 };
 
-export async function getUserSelectdValue() {
+export async function getUserSelectdValue(context: vscode.ExtensionContext) {
   return new Promise(async (resolve) => {
     const quickPick: PageQuickPick = vscode.window.createQuickPick();
     quickPick.title = "Search for your notion page (or paste any URL)";
@@ -29,14 +31,15 @@ export async function getUserSelectdValue() {
     });
 
     // On select event listener
-    quickPick.onDidAccept(() => {
+    quickPick.onDidAccept(async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
         return vscode.window.showErrorMessage('No active text editor found!');
       }
       
       const selection = quickPick.activeItems[0];
-      saveBookmark(editor, selection.page.url);
+      const newBookmark = await saveBookmark(editor, selection.page.url);
+      showBookmark(context, newBookmark.line, newBookmark.link);
       quickPick.hide();
       vscode.window.showInformationMessage('Code linked with docs!');
     });
